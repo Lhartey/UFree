@@ -14,9 +14,8 @@ router.get('/:id', (req, res) => {
 })
 
 //POST a new gigs
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const {title, description, requirements, budget, employerId, category, deadline, attachments} = req.body
-    
 try {
     const gig = await Gig.create({title, description, requirements, budget, employerId, category, deadline, attachments})
     res.status(200).json(gig)
