@@ -9,12 +9,12 @@ const getGigs = async (req, res) => {
 
 // get a single gig
 const getGig = async (req, res) => {
-    const {} = req.params
+    const { id } = req.params
 
     const gig = await Gig.findById(id)
 
     if (!gig) {
-        return res.status(400).json({error: 'No such Gig'})
+        return res.status(404).json({error: 'No such Gig'})
     }
 
     res.status(200).json(gig)
