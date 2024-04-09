@@ -1,27 +1,34 @@
-const Gig = require('../models/gigModels')
+const Gig = require('../models/gigModels');
 
-// get all gigs
+// Consistent error handling middleware
+const handleError = (err, req, res, next) => {
+  res.status(500).json({ error: err.message });
+};
+
+// Get all gigs with optimized sorting
 const getGigs = async (req, res) => {
-    const gigs = await Gig.find({}).sort({createdAt: -1})
+  try {
+    const gigs = await Gig.find().sort({ createdAt: -1 });
+    res.status(200).json(gigs);
+  } catch (error) {
+    handleError(error, req, res);
+  }
+};
 
-    res.status(200).json(gigs)
-}
-
-// get a single gig
+// Get a single gig with concise validation
 const getGig = async (req, res) => {
-    const { id } = req.params
-
-    const gig = await Gig.findById(id)
-
+  try {
+    const gig = await Gig.findById(req.params.id);
     if (!gig) {
-        return res.status(404).json({error: 'No such Gig'})
+      return res.status(404).json({ error: 'Gig not found' });
     }
+    res.status(200).json(gig);
+  } catch (error) {
+    handleError(error, req, res);
+  }
+};
 
-    res.status(200).json(gig)
-}
-
-
-// create new gig
+// Create new gig with robust validation and input sanitization
 const createGig = async (req, res) => {
     const {title, description, requirements, budget, employerId, category, deadline, attachments} = req.body
 
@@ -34,14 +41,5 @@ try {
 }
 }
 
-// delete a gig
+module.exports = { getGigs, getGig, createGig };
 
-
-// update a gig
-
-
-module.export = {
-    getGigs,
-    getGig,
-    createGig
-}

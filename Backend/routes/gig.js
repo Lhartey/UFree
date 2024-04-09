@@ -1,8 +1,8 @@
 const express = require('express')
 const {
-    createGig,
     getGigs,
-    getGig
+    getGig,
+    createGig
 } = require('../controllers/gigsControllers')
 
 const router = express.Router()

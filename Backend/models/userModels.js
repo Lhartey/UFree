@@ -105,40 +105,6 @@ const userSchema = new mongoose.Schema({
   profilePicture:{
     type: String,
   },
-  skills:{
-    type: [String],
-    required: true,
-    // Only applicable for students (schema option)
-    of: { $ref: 'User', type: String }, // Reference the User model for userType check
-    validate: {
-      validator: function () {
-        return this.userType === 'student';
-      },
-      message: 'Skills can only be added by student user',
-  },
-},
-  experience:{
-    type: experienceSchema,
-    // Only applicable for students (schema option)
-    of: { $ref: 'User', type: String }, // Reference the User model for userType check
-    validate: {
-      validator: function () {
-        return this.userType === 'student';
-      },
-      message: 'Skills can only be added by student users',
-  },
-},
-  education: {
-    type: [educationSchema], // Array of education objects
-    // Only applicable for students (schema option)
-    of: { $ref: 'User', type: String }, // Reference the User model for userType check
-    validate: {
-      validator: function () {
-        return this.userType === 'student';
-      },
-      message: 'Skills can only be added by student users',
-  },
-  },
   contactInformation:{
     type: [contactInformationSchema],
   },
