@@ -1,4 +1,5 @@
 const Gig = require('../models/gigModels');
+const mongoose = require('mongoose')
 
 // Consistent error handling middleware
 const handleError = (err, req, res, next) => {
@@ -13,33 +14,94 @@ const getGigs = async (req, res) => {
   } catch (error) {
     handleError(error, req, res);
   }
-};
+}
 
-// Get a single gig with concise validation
+// Get a gig with concise validation
 const getGig = async (req, res) => {
-  try {
-    const gig = await Gig.findById(req.params.id);
+  const { id } = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+  return res.status(404).json({error: 'No such gig'})
+  }
+    const gig = await Gig.findById(id);
     if (!gig) {
-      return res.status(404).json({ error: 'Gig not found' });
+      return res.status(400).json({ error: 'Gig not found' });
     }
     res.status(200).json(gig);
-  } catch (error) {
-    handleError(error, req, res);
-  }
-};
+}
 
 // Create new gig with robust validation and input sanitization
 const createGig = async (req, res) => {
-    const {title, description, requirements, budget, employerId, category, deadline, attachments} = req.body
+    const {title, description, requirements, budget, category, deadline, attachments} = req.body
+
+    let empptyFileds = []
+
+    if(!title) {
+        empptyFileds.push('title')
+    }
+    if(!description) {
+        empptyFileds.push('description')
+    }
+    if(!requirements) {
+        empptyFileds.push('requirements')
+    }
+    if(!budget) {
+        empptyFileds.push('budget')
+    }
+    if(!category) {
+        empptyFileds.push('category')
+    }
+    if(empptyFileds.length > 0) {
+        return res.status(400).json({error: 'Please fill in the required fields', empptyFileds})
+    }
 
     // add doc to db
 try {
-    const gig = await Gig.create({title, description, requirements, budget, employerId, category, deadline, attachments})
+    const gig = await Gig.create({title, description, requirements, budget, category, deadline, attachments})
     res.status(200).json(gig)
 } catch (error) {
     res.status(400).json({error: error.message})
 }
 }
 
-module.exports = { getGigs, getGig, createGig };
+//Delete a gig with concise validation
+const deleteGig = async (req, res) => {
+  const { id } = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({error: 'No such gig'})
+  }
+
+  const gig = await Gig.findOneAndDelete({ _id: id });
+
+  if (!gig) {
+    return res.status(400).json({ error: 'Gig not found' });
+  }
+
+  res.status(200).json(gig);
+}
+
+// Update a gig with concise validation
+const updateGig = async (req, res) => {
+  // Destructure and validate gig ID
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'Invalid gig ID' });
+  }
+
+  // Find and update gig in one step using findOneAndUpdate
+  try {
+    const updatedGig = await Gig.findOneAndUpdate({ _id: id }, req.body, { new: true }); // Return updated document
+    if (!updatedGig) {
+      return res.status(400).json({ error: 'Gig not found' });
+    }
+    return res.status(200).json(updatedGig);
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    return res.status(500).json({ error: 'Internal Server Error' }); // Handle unexpected errors
+  }
+};
+
+
+module.exports = { getGigs, getGig, createGig, deleteGig, updateGig};
 

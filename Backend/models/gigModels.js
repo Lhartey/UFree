@@ -11,7 +11,8 @@ const gigSchema = new mongoose.Schema({
   },
   requirements: {
     type: String,
-    or: [String], // Allow single string or array of strings for skills
+    or: [String],
+    required: true, 
   },
   budget: {
     type: Number,
@@ -20,7 +21,6 @@ const gigSchema = new mongoose.Schema({
   employerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
   },
   category: {
     type: String,
@@ -31,6 +31,10 @@ const gigSchema = new mongoose.Schema({
   attachments: {
     type: [String], // Array of file paths or references (optional)
   },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 } , {timestamp: true,});
 
 module.exports = mongoose.model('Gig', gigSchema);

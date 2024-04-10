@@ -2,7 +2,9 @@ const express = require('express')
 const {
     getGigs,
     getGig,
-    createGig
+    createGig, 
+    deleteGig, 
+    updateGig
 } = require('../controllers/gigsControllers')
 
 const router = express.Router()
@@ -17,13 +19,9 @@ router.get('/:id', getGig)
 router.post('/', createGig)
 
 //DELETE a  gigs
-router.delete('/:id', (req, res) => {
-    res.json({mssg: 'DELETE a gig'})
-})
+router.delete('/:id', deleteGig)
 
 //UPDATE a gigs
-router.patch('/:id', (req, res) => {
-    res.json({mssg: 'UPDATE a gig'})
-})
+router.patch('/:id', updateGig)
 
 module.exports = router
