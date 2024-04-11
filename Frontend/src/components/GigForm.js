@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { GigsContext } from "../context/GigsContext";
 import { useGigsContext } from "../hooks/useGigsContext";
 
 const GigForm = () => {
@@ -12,7 +11,6 @@ const GigForm = () => {
   const [deadline, setDeadline] = useState('');
   const [attachments, setAttachments] = useState('');
   const [error, setError] = useState(null);
-  const [emptyFields, setEmptyFields] = useState([])
 
   const categories = [
     "Copywriting",
@@ -45,7 +43,6 @@ const GigForm = () => {
   if (!response.ok) {
     setError(json.error)
     // Update emptyFields based on backend response
-    setEmptyFields(json.emptyFields) // Set to empty array if not provided
   }
   if (response.ok) {
     setTitle('')
@@ -55,7 +52,6 @@ const GigForm = () => {
     setCategory('')
     setDeadline('')
     setAttachments('')
-    setEmptyFields([])
     setError(null)
     console.log('new workout added', json)
     dispatch({type: 'CREATE_GIGS', payload: json})

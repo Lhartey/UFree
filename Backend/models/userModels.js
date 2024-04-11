@@ -1,126 +1,76 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+const validator = require('validator')
 
-const experienceSchema = new mongoose.Schema({
-  companyName: {
-    type: String,
-    required: true,
-  },
-  jobTitle: {
-    type: String,
-    required: true,
-  },
-  startDate: {
-    type: Date,
-  },
-  endDate: {
-    type: Date,
-  },
-  description: {
-    type: String,
-  },
-});
+const Schema = mongoose.Schema
 
-const educationSchema = new mongoose.Schema({
-  schoolName: {
-    type: String,
-    required: true,
-  },
-  degree: {
-    type: String,
-  },
-  graduationYear: {
-    type: Number,
-  },
-});
-
-const companyInformationSchema = new mongoose.Schema({
-  companyName: {
-    type: String,
-    required: true,
-  },
-  companyWebsite: {
-    type: String,
-  },
-  industry: {
-    type: String,
-    required: true,
-  },
-  companySize: {
-    type: String,
-    required: true,
-    enum: ['Big', 'Medium', 'Small']
-  },
+const userSchema = new Schema({
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    userType: {
+      type: String,
+      required: true,
+      enum: ['student', 'employer'],
+    }
 })
 
-const contactInformationSchema = new mongoose.Schema({
-  phoneNumber: {
-    type: Number,
-    required: true,
-  },
-  facebook: {
-    type: String,
-  },
-  twitter: {
-    type: String,
+// static signup method
+userSchema.statics.signup = async function(email, password, userType) {
+
+  // validator
+  if (!email || !password || !userType) {
+    throw Error('All fields must be filled')
   }
-});
-
-const employerSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'User',
-  },
-  companyInformation: {
-    type: companyInformationSchema,
-    required: true,
-  },
-});
-
-
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  userType: {
-    type: String,
-    required: true,
-    enum: ['student', 'employer'],
-  },
-  firstname:{
-    type: String,
-    required: true,
-  },
-  lastname:{
-    type: String,
-    required: true,
-  },
-  profilePicture:{
-    type: String,
-  },
-  contactInformation:{
-    type: [contactInformationSchema],
-  },
-}, {timestamps: true});
-
-
-
-// Hash password before saving the user
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
+  if (!validator.isEmail(email)) {
+    throw Error('Email is not valid')
+  }
+  if (!validator.isStrongPassword(password)) {
+    throw Error('Password not strong enough')
   }
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
+  const exists = await this.findOne({ email, userType })
 
-module.exports = mongoose.model('User', userSchema);
+  if (exists) {
+    throw Error('Email already in use')
+  }
+
+  const salt = await bcrypt.genSalt(10)
+  const hash = await bcrypt.hash(password, salt)
+
+  const user = await this.create({ email, password: hash, userType })
+
+  return user
+
+}
+
+// static login method
+userSchema.statics.login = async function(email, password, userType) {
+
+  if (!email || !password || !userType) {
+    throw Error('All fields must be filled')
+  }
+
+  const user = await this.findOne({ email, userType })
+
+  if (!user) {
+    throw Error('Incorrect email or user type') 
+  }
+
+  const match = await bcrypt.compare(password, user.password)
+
+  if (!match) {
+    throw Error('Incorrect Password')
+  }
+
+  return user
+
+} 
+
+module.exports = mongoose.model('User', userSchema)
