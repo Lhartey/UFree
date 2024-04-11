@@ -18,9 +18,9 @@ const gigSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  employerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+  user_id: {
+    type: String,
+    required: true
   },
   category: {
     type: String,

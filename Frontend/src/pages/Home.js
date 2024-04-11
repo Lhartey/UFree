@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useGigsContext } from '../hooks/useGigsContext'
+import { useAuthContext } from '../hooks/useAuthContext'
 
 //Components
 import GigDetails from '../components/GigDetails'
@@ -7,9 +8,14 @@ import GigForm from '../components/GigForm'
 
 const Home = () => {
     const { gigs, dispatch } = useGigsContext()
+    const {user} = useAuthContext()
     useEffect(() => {
         const fetchGigs = async () => {
-            const response = await fetch('/api/gigs')
+            const response = await fetch('/api/gigs', {
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
+            })
             const json = await response.json()
 
             if (response.ok) {
@@ -17,8 +23,10 @@ const Home = () => {
             }
         }
 
-        fetchGigs()
-    }, [dispatch])
+        if (user) {
+            fetchGigs()
+        }
+    }, [dispatch, user])
 
     return (
         <div className="Home">

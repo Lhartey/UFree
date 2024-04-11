@@ -9,11 +9,20 @@ const handleError = (err, req, res, next) => {
 // Get all gigs with optimized sorting
 const getGigs = async (req, res) => {
   try {
-    const gigs = await Gig.find().sort({ createdAt: -1 });
+    const gigs = await Gig.find({}).sort({ createdAt: -1 });
+
     res.status(200).json(gigs);
   } catch (error) {
     handleError(error, req, res);
   }
+}
+
+const getUserGigs = async (req, res) => {
+  const user_id = req.user._id
+  
+    const gigs = await Gig.find({ user_id }).sort({ createdAt: -1 });
+    
+    res.status(200).json(gigs);
 }
 
 // Get a gig with concise validation
@@ -57,7 +66,8 @@ const createGig = async (req, res) => {
 
     // add doc to db
 try {
-    const gig = await Gig.create({title, description, requirements, budget, category, deadline, attachments})
+  const user_id = req.user._id
+    const gig = await Gig.create({title, description, requirements, budget, user_id, category, deadline, attachments})
     res.status(200).json(gig)
 } catch (error) {
     res.status(400).json({error: error.message})
@@ -103,5 +113,5 @@ const updateGig = async (req, res) => {
 };
 
 
-module.exports = { getGigs, getGig, createGig, deleteGig, updateGig};
+module.exports = { getGigs, getUserGigs, getGig, createGig, deleteGig, updateGig};
 

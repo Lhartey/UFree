@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { useGigsContext } from "../hooks/useGigsContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const GigForm = () => {
   const { dispatch } = useGigsContext()
+  const { user } = useAuthContext()
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [requirements, setRequirements] = useState('');
@@ -28,6 +31,11 @@ const GigForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!user) {
+      setError('Please Login or Signup')
+      return 
+    }
     // Handle form submission logic
     const gig = {title, description, requirements,budget,category,deadline,attachments}
     
@@ -35,7 +43,8 @@ const GigForm = () => {
         method: 'POST',
         body: JSON.stringify(gig),
         headers: {
-            'Content-Type': "application/json"
+            'Content-Type': "application/json",
+            'Authorization': `Bearer ${user.token}`
         }
   })
   const json = await response.json()
@@ -92,27 +101,17 @@ const GigForm = () => {
         onChange={(e) => setBudget(e.target.value)}
         value={budget}
       />
-
-      
       <label>Category:</label>
-            <div>
-              {categories.map((category) => (
-                <div key={category}>
-                  <input
-                    type="radio"
-                    required
-                    id={category}
-                    name="service"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  />
-                  <label htmlFor={category}>{category}</label>
-                </div>
-              ))}
-            </div>
-
-
-      
+      <select
+        value={category} // Set the selected value based on the 'category' state
+        onChange={(e) => setCategory(e.target.value)} // Update state on change
+      >
+        <option value="">Select Category</option> {categories.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
+</select>
       <label>Deadline:</label>
       <input
         type="date"
