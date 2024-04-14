@@ -2,13 +2,20 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { useAuthContext } from './hooks/useAuthContext'
 
 //Pages & Components
-import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 // import UserProfilePage from './pages/UserProfilePage';
 // import ProjectListingPage from './pages/ProjectListingPage';
 // import ProjectDetailPage from './pages/ProjectDetailPage';
 import Navbar from './components/Navbar';
+import HomePage from './pages/Homepage';
+import PostProject from './pages/PostProject';
+import ApplicationForm from './components/ApplicationForm';
+import AvailableGigs from './pages/AvailableGigs'
+import GigApplications from './pages/GigApplications'
+import FinishedProject from './pages/FinishedProject';
+import Feedbacks from './pages/Feedback';
 
 function App() {
   const { user } = useAuthContext()
@@ -21,7 +28,23 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={user ? <Home /> : <Navigate to="/login" />}
+              element={ <HomePage />}
+            />
+            <Route
+              path="/dashboard"
+              element={user ? <Dashboard /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/Feedbacks"
+              element={<Feedbacks />}
+            />
+            <Route
+              path="/FinishedProject"
+              element={user ? <FinishedProject /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/GigApplications"
+              element={user ? <GigApplications /> : <Navigate to="/login" />}
             />
             <Route
               path="/login"
@@ -30,6 +53,27 @@ function App() {
             <Route
               path="/signup"
               element={!user ? <Signup /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/post-project"
+              element={user ? <PostProject /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/available-gigs"
+              element={user ? <AvailableGigs /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/gigs/1"
+              element={user ? <GigApplications /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/gigs/2"
+              element={user ? <GigApplications /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/application-form"
+              component={ApplicationForm}
+              element={user ? <ApplicationForm /> : <Navigate to="/login" />}
             />
           </Routes>
         </div>

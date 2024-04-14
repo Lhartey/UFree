@@ -3,8 +3,8 @@ import { useGigsContext } from "../hooks/useGigsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 
 const GigForm = () => {
-  const { dispatch } = useGigsContext()
-  const { user } = useAuthContext()
+  const { dispatch } = useGigsContext();
+  const { user } = useAuthContext();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -33,11 +33,11 @@ const GigForm = () => {
     e.preventDefault();
 
     if (!user) {
-      setError('Please Login or Signup')
-      return 
+      setError('Please Login or Signup');
+      return;
     }
     // Handle form submission logic
-    const gig = {title, description, requirements,budget,category,deadline,attachments}
+    const gig = { title, description, requirements, budget, category, deadline, attachments };
     
     const response = await fetch('/api/gigs', {
         method: 'POST',
@@ -46,26 +46,24 @@ const GigForm = () => {
             'Content-Type': "application/json",
             'Authorization': `Bearer ${user.token}`
         }
-  })
-  const json = await response.json()
+    });
+    const json = await response.json();
 
-  if (!response.ok) {
-    setError(json.error)
-    // Update emptyFields based on backend response
-  }
-  if (response.ok) {
-    setTitle('')
-    setDescription('')
-    setRequirements('')
-    setBudget('')
-    setCategory('')
-    setDeadline('')
-    setAttachments('')
-    setError(null)
-    console.log('new workout added', json)
-    dispatch({type: 'CREATE_GIGS', payload: json})
-  }
-  }
+    if (!response.ok) {
+      setError(json.error);
+    } else {
+      setTitle('');
+      setDescription('');
+      setRequirements('');
+      setBudget('');
+      setCategory('');
+      setDeadline('');
+      setAttachments('');
+      setError(null);
+      console.log('new gig added', json);
+      dispatch({ type: 'CREATE_GIGS', payload: json });
+    }
+  };
 
   return (
     <form className="create" onSubmit={handleSubmit}>
@@ -79,9 +77,10 @@ const GigForm = () => {
       />
 
       <label>Description:</label>
-      <input
-        type="text"
+      <textarea
         required
+        rows={10}
+        cols={90}
         onChange={(e) => setDescription(e.target.value)}
         value={description}
       />
@@ -111,7 +110,7 @@ const GigForm = () => {
             {category}
           </option>
         ))}
-</select>
+      </select>
       <label>Deadline:</label>
       <input
         type="date"
@@ -123,8 +122,8 @@ const GigForm = () => {
       <label>Attachments:</label>
       <input
         type="file"
-        onChange={(e) => setAttachments(e.target.value)}
-        value={attachments}
+        onChange={(e) => setAttachments(e.target.files[0])}
+        // value={attachments} // Remove value attribute for file inputs
       />
 
       <button>Add Project</button>

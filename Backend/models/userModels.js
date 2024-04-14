@@ -5,6 +5,10 @@ const validator = require('validator')
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
+    name: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
@@ -22,10 +26,10 @@ const userSchema = new Schema({
 })
 
 // static signup method
-userSchema.statics.signup = async function(email, password, userType) {
+userSchema.statics.signup = async function(name, email, password, userType) {
 
   // validator
-  if (!email || !password || !userType) {
+  if (!name || !email || !password || !userType) {
     throw Error('All fields must be filled')
   }
   if (!validator.isEmail(email)) {
@@ -35,7 +39,7 @@ userSchema.statics.signup = async function(email, password, userType) {
     throw Error('Password not strong enough')
   }
 
-  const exists = await this.findOne({ email, userType })
+  const exists = await this.findOne({ name, email, userType })
 
   if (exists) {
     throw Error('Email already in use')
@@ -44,7 +48,7 @@ userSchema.statics.signup = async function(email, password, userType) {
   const salt = await bcrypt.genSalt(10)
   const hash = await bcrypt.hash(password, salt)
 
-  const user = await this.create({ email, password: hash, userType })
+  const user = await this.create({ name, email, password: hash, userType })
 
   return user
 

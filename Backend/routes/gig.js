@@ -1,7 +1,6 @@
 const express = require('express')
 const {
     getGigs,
-    getUserGigs,
     getGig,
     createGig, 
     deleteGig, 
@@ -17,8 +16,6 @@ router.use(requireAuth)
 //GET all gigs
 router.get('/', getGigs)
 
-// Get gigs uploaded by a specific user
-router.get('/', getUserGigs)
 
 //GET a single gigs
 router.get('/:id', getGig)

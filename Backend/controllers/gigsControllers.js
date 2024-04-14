@@ -17,14 +17,6 @@ const getGigs = async (req, res) => {
   }
 }
 
-const getUserGigs = async (req, res) => {
-  const user_id = req.user._id
-  
-    const gigs = await Gig.find({ user_id }).sort({ createdAt: -1 });
-    
-    res.status(200).json(gigs);
-}
-
 // Get a gig with concise validation
 const getGig = async (req, res) => {
   const { id } = req.params
@@ -41,38 +33,39 @@ const getGig = async (req, res) => {
 
 // Create new gig with robust validation and input sanitization
 const createGig = async (req, res) => {
-    const {title, description, requirements, budget, category, deadline, attachments} = req.body
+  const { title, description, requirements, budget, category, deadline, attachments } = req.body;
 
-    let empptyFileds = []
+  let emptyFields = [];
 
-    if(!title) {
-        empptyFileds.push('title')
-    }
-    if(!description) {
-        empptyFileds.push('description')
-    }
-    if(!requirements) {
-        empptyFileds.push('requirements')
-    }
-    if(!budget) {
-        empptyFileds.push('budget')
-    }
-    if(!category) {
-        empptyFileds.push('category')
-    }
-    if(empptyFileds.length > 0) {
-        return res.status(400).json({error: 'Please fill in the required fields', empptyFileds})
-    }
+  if (!title) {
+    emptyFields.push('title');
+  }
+  if (!description) {
+    emptyFields.push('description');
+  }
+  if (!requirements) {
+    emptyFields.push('requirements');
+  }
+  if (!budget) {
+    emptyFields.push('budget');
+  }
+  if (!category) {
+    emptyFields.push('category');
+  }
+  if (emptyFields.length > 0) {
+    return res.status(400).json({ error: 'Please fill in the required fields', emptyFields });
+  }
 
-    // add doc to db
-try {
-  const user_id = req.user._id
-    const gig = await Gig.create({title, description, requirements, budget, user_id, category, deadline, attachments})
-    res.status(200).json(gig)
-} catch (error) {
-    res.status(400).json({error: error.message})
-}
-}
+  // Add doc to db
+  try {
+    const user_id = req.user._id;
+    const gig = await Gig.create({ title, description, requirements, budget, user_id, category, deadline, attachments });
+    res.status(200).json(gig);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 
 //Delete a gig with concise validation
 const deleteGig = async (req, res) => {
@@ -113,5 +106,5 @@ const updateGig = async (req, res) => {
 };
 
 
-module.exports = { getGigs, getUserGigs, getGig, createGig, deleteGig, updateGig};
+module.exports = { getGigs,  getGig, createGig, deleteGig, updateGig};
 

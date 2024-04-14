@@ -23,18 +23,30 @@ const loginUser = async (req, res) => {
 
 //signup user
 const signupUser = async (req, res) => {
-    const {email, password, userType} = req.body
+    const {name, email, password, userType} = req.body
 
     try {
-        const user = await User.signup(email, password, userType)
+        const user = await User.signup(name, email, password, userType)
 
         // create  a token
         const token = createToken(user._id)
 
-        res.status(200).json({email, token})
+        res.status(200).json({name, email, token})
     } catch (error) {
         res.status(400).json({error: error.message})
     }
 }
 
-module.exports = { signupUser, loginUser }
+    const userProfile = async (req, res) => {
+        const { name, email, password } = req.body;
+        try {
+        const user = await User.findByIdAndUpdate(req.params.id, { name, email, password }, { new: true });
+        // Optionally hash the new password before saving to the database
+        res.json(user);
+        } catch (error) {
+        console.error('Error updating user profile:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+        }
+    };
+
+module.exports = { signupUser, loginUser, userProfile }

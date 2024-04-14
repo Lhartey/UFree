@@ -6,9 +6,8 @@ export const gigsReducer = (state, action) => {
     switch (action.type) {
         case 'SET_GIGS':
             return {
-                gigs: action.payload
+                gigs: action.payload || [] // Provide an empty array if payload is null
             }
-
         case 'CREATE_GIGS':
             return {
                 gigs: [action.payload, ...state.gigs]
