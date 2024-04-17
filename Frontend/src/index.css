@@ -1,9 +1,7 @@
-
-
-/* google font */
+/* Google font */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&family=VT323&display=swap');
 
-/* layout */
+/* Layout */
 :root {
   --primary: #1aac83;
   --error: #e7195a;
@@ -13,10 +11,7 @@ body {
   margin: 0;
   font-family: "Poppins";
 }
-header {
-  background: #fff;
-}
-header .container {
+.container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 10px 20px;
@@ -24,21 +19,14 @@ header .container {
   align-items: center;
   justify-content: space-between;
 }
-header a {
+a {
   color: #333;
   text-decoration: none;
 }
-.pages{
+.pages {
   max-width: 1400px;
   padding: 20px;
   margin: 0 auto;
-}
-
-/* homepage */
-.home {
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  gap: 100px;
 }
 .gig-details {
   background: #fff;
@@ -46,7 +34,7 @@ header a {
   margin: 20px auto;
   padding: 20px;
   position: relative;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
 }
 .gig-details h4 {
   margin: 0 0 10px 0;
@@ -69,8 +57,9 @@ header a {
   color: #333;
 }
 
-/* new gig form */
-label, input {
+/* New gig form */
+label,
+input {
   display: block;
 }
 input {
@@ -103,7 +92,7 @@ input.error {
   border: 1px solid var(--error);
 }
 
-/* navbar */
+/* Navbar */
 nav {
   display: flex;
   align-items: center;
@@ -123,8 +112,9 @@ nav button {
   margin-left: 10px;
 }
 
-/* auth forms */
-form.signup, form.login {
+/* Auth forms */
+form.signup,
+form.login {
   max-width: 400px;
   margin: 20px auto;
   padding: 20px;

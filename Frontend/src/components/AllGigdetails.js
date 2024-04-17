@@ -1,9 +1,8 @@
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import '../styles/AllGigDetails.css'; // Import CSS file for styling
+import { Link } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
+import '../styles/AllGigDetails.css';
 
 const AllGigDetails = ({ gig }) => {
-  // Check if gig is defined
   if (!gig) {
     return null;
   }
@@ -37,10 +36,10 @@ const AllGigDetails = ({ gig }) => {
           <span className="detail-value">{formatDistanceToNow(new Date(gig.createdAt), { addSuffix: true })}</span>
         </div>
       </div>
-      {/* Button linked to application form page */}
-      <Link to="/application-form" className="apply-button">
+      <Link to={`/application-form/${gig._id}`} className="apply-button">
         Apply Now
       </Link>
+
     </div>
   );
 };

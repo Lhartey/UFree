@@ -1,103 +1,140 @@
-import React, { useState } from "react";
-import { useApplicationsContext } from "../hooks/useApplicationsContext"; // Assuming the context hook name is 'useApplicationsContext'
-import { useAuthContext } from "../hooks/useAuthContext";
+import React, { useState } from 'react';
+import axios from 'axios'; // Import axios for HTTP requests
 
 const ApplicationForm = () => {
-  const { dispatch } = useApplicationsContext();
-  const { user } = useAuthContext();
-
+  // State variables for form data, submission status, and error messages
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [coverLetter, setCoverLetter] = useState(null); // Assuming cover letter is a file
-  const [resume, setResume] = useState(null); // Assuming resume is a file (optional)
-  const [error, setError] = useState(null);
+  const [coverLetter, setCoverLetter] = useState(null);
+  const [submissionStatus, setSubmissionStatus] = useState('initial');
+  const [errorMessages, setErrorMessages] = useState([]);
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (e.target.id === 'coverLetter') {
-      setCoverLetter(file);
-    } else if (e.target.id === 'resume') { // Optional: handle resume upload
-      setResume(file);
-    }
+  // Handle name input change
+  const handleNameChange = (event) => {
+    setName(event.target.value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Handle email input change
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
 
-    if (!user) {
-      setError('Please Login or Signup');
+  // Handle cover letter input change
+  const handleCoverLetterChange = (event) => {
+    setCoverLetter(event.target.files[0]); // Assuming single file selection
+    setErrorMessages([]); // Clear any previous validation errors on file selection
+  };
+
+  // Handle form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Basic validation
+    const validationErrors = [];
+    if (!name.trim()) {
+      validationErrors.push('Please enter your name.');
+    }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      validationErrors.push('Please enter a valid email address.');
+    }
+    if (!coverLetter) {
+      validationErrors.push('Please select a cover letter file.');
+    }
+
+    if (validationErrors.length > 0) {
+      setErrorMessages(validationErrors);
       return;
     }
 
-    if (!name || !email || !coverLetter) {
-      setError('Please fill in all required fields (Name, Email, Cover Letter)');
-      return;
-    }
+    try {
+      // Upload cover letter file using FormData
+      const formData = new FormData();
+      formData.append('file', coverLetter);
+      formData.append('autoDelete', true); // Set autoDelete to true (optional)
+      const fileUploadResponse = await fetch('https://file.io/', {
+        method: 'POST',
+        body: formData
+      });
+      const fileUploadData = await fileUploadResponse.json();
 
-    const formData = new FormData(); // Use FormData for file uploads
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('coverLetter', coverLetter);
-    // Optional: Add resume to FormData if applicable
-    if (resume) {
-      formData.append('resume', resume);
-    }
-
-    const response = await fetch('/api/applications', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Authorization': `Bearer ${user.token}`
+      if (!fileUploadData.success) {
+        throw new Error('Error uploading file.');
       }
-    });
 
-    const json = await response.json();
+      // Send application data (including fileKey) to backend using Axios
+      const applicationData = {
+        name,
+        email,
+        coverLetter: fileUploadData.key // Use the uploaded file key
+      };
+      setSubmissionStatus('pending'); // Update submission status
 
-    if (!response.ok) {
-      setError(json.error);
-    } else {
-      setName('');
-      setEmail('');
-      setCoverLetter(null);
-      setResume(null); // Reset resume state if applicable
-      setError(null);
-      console.log('new application submitted', json);
-      dispatch({ type: 'CREATE_APPLICATIONS', payload: json });
+      const response = await axios.post('http://localhost:3000/api/applications', applicationData);
+      console.log('Application submitted successfully!', response.data);
+      setSubmissionStatus('success');
+      setErrorMessages([]); // Clear error messages on success
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      setSubmissionStatus('error');
+      setErrorMessages(['Error submitting application. Please try again.']);
     }
   };
 
   return (
-    <form className="apply" onSubmit={handleSubmit}>
-      <h3>Apply</h3>
-      <label>Name:</label>
+    <form onSubmit={handleSubmit}>
+      {/* Name Input */}
+      <label htmlFor="nameInput">Name:</label>
       <input
         type="text"
-        required
-        onChange={(e) => setName(e.target.value)}
+        id="nameInput"
         value={name}
+        onChange={handleNameChange}
+        className={errorMessages.includes('Please enter your name.') ? 'error-input' : ''}
       />
-      <label>Email:</label>
+      {errorMessages.includes('Please enter your name.') && (
+        <p className="error-message">Please enter your name.</p>
+      )}
+
+      {/* Email Input */}
+      <label htmlFor="emailInput">Email:</label>
       <input
         type="email"
-        required
-        onChange={(e) => setEmail(e.target.value)}
+        id="emailInput"
         value={email}
+        onChange={handleEmailChange}
+        className={errorMessages.includes('Please enter a valid email address.') ? 'error-input' : ''}
       />
-      <label>Cover Letter:</label>
+      {errorMessages.includes('Please enter a valid email address.') && (
+        <p className="error-message">Please enter a valid email address.</p>
+      )}
+
+      {/* Cover Letter Input */}
+      <label htmlFor="coverLetterInput">Cover Letter:</label>
       <input
         type="file"
-        id="coverLetter"
-        required
-        onChange={handleFileUpload}
+        id="coverLetterInput"
+        onChange={handleCoverLetterChange}
+        className={errorMessages.includes('Please select a cover letter file.') ? 'error-input' : ''}
       />
-      {resume && ( // Optional: Display resume upload option if applicable
-        <>
-          <label>Resume (Optional):</label>
-          <input type="file" id="resume" onChange={handleFileUpload} />
-        </>
+      {errorMessages.includes('Please select a cover letter file.') && (
+        <p className="error-message">Please select a cover letter file.</p>
       )}
-      <button>Submit Application</button>
-      {error && <div className="error">{error}</div>}
+
+      {/* Submit Button */}
+      <button type="submit" disabled={submissionStatus === 'pending'}>
+        {submissionStatus === 'initial' ? 'Submit Application' : (
+          submissionStatus === 'pending' ? 'Submitting...' : 'Success!'
+        )}
+      </button>
+
+      {/* Display any error messages from submission or validation */}
+      {errorMessages.length > 0 && (
+        <ul className="error-messages">
+          {errorMessages.map((message, index) => (
+            <li key={index}>{message}</li>
+          ))}
+        </ul>
+      )}
     </form>
   );
 };

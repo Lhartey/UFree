@@ -71,7 +71,7 @@ function App() {
               element={user ? <GigApplications /> : <Navigate to="/login" />}
             />
             <Route
-              path="/application-form"
+              path="/application-form/:gigId" 
               component={ApplicationForm}
               element={user ? <ApplicationForm /> : <Navigate to="/login" />}
             />

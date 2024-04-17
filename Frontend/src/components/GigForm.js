@@ -95,7 +95,7 @@ const GigForm = () => {
 
       <label>Budget (GH¢):</label>
       <input
-        type="number"
+        type="double"
         required
         onChange={(e) => setBudget(e.target.value)}
         value={budget}
@@ -114,7 +114,6 @@ const GigForm = () => {
       <label>Deadline:</label>
       <input
         type="date"
-        required
         onChange={(e) => setDeadline(e.target.value)}
         value={deadline}
       />

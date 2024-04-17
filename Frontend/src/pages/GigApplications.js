@@ -1,37 +1,71 @@
-// src/pages/GigApplications.js
-
-import React, { useState } from 'react';
-import GigList from '../components/GigList';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ApplicationList from '../components/ApplicationList';
-import { WeavyComponent } from '../components/WeavyComponent';
-import markAsRead from '../components/markAsRead';
-import gigsData from '../data/gigsData'; // Import the gig data file
-
 
 function GigApplications() {
-  const [userGigs] = useState(gigsData);
-  const [selectedGig, setSelectedGig] = useState(null);
-  const [recipient, setRecipient] = useState(null);
+  const [showAllApplications, setShowAllApplications] = useState(false);
+  const [filteredApplications, setFilteredApplications] = useState([]);
 
-  const handleGigSelect = (gigId) => {
-    setSelectedGig(userGigs.find(gig => gig.id === gigId));
+  const toggleApplications = () => {
+    setShowAllApplications(prevState => !prevState);
   };
 
-  const handleSendMessage = (applicant) => {
-    setRecipient(applicant.applicantName);
-    markAsRead(applicant.applicantName, applicant.messageId);
+  const filterApplicationsByTime = (time) => {
+    // Get the current date
+    const today = new Date();
+    // Filter applications based on the selected time
+    let filteredApps = [];
+    if (time === 'today') {
+      filteredApps = filteredApplications.filter(app => {
+        const appDate = new Date(app.createdAt);
+        return appDate.toDateString() === today.toDateString();
+      });
+    } else if (time === 'this week') {
+      const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      filteredApps = filteredApplications.filter(app => {
+        const appDate = new Date(app.createdAt);
+        return appDate >= oneWeekAgo;
+      });
+    } else if (time === 'this month') {
+      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      filteredApps = filteredApplications.filter(app => {
+        const appDate = new Date(app.createdAt);
+        return appDate >= firstDayOfMonth;
+      });
+    }
+    // Update the state with filtered applications
+    setFilteredApplications(filteredApps);
   };
+
+  useEffect(() => {
+    // Fetch applications data
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/applications/get');
+        setFilteredApplications(response.data); // Assuming response contains application data
+      } catch (error) {
+        console.error('Error fetching applications:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="GigApplications">
       <h1>Gig Management</h1>
-      <GigList gigs={userGigs} onGigSelect={handleGigSelect} />
-      {selectedGig && (
-        <>
-          <ApplicationList gig={selectedGig} onSendMessage={handleSendMessage} />
-          {recipient && <WeavyComponent recipient={recipient} />}
-        </>
+      {/* Buttons to filter applications */}
+      <button onClick={toggleApplications}>
+        {showAllApplications ? 'Hide Applications' : 'Show All Applications'}
+      </button>
+        <button onClick={() => filterApplicationsByTime('today')}>Today</button>
+        <button onClick={() => filterApplicationsByTime('this week')}>This Week</button>
+        <button onClick={() => filterApplicationsByTime('this month')}>This Month</button>
+      {/* Render ApplicationList only if showAllApplications is true */}
+      {showAllApplications && (
+        <ApplicationList applications={filteredApplications} />
       )}
+      {/* Button to toggle showing/hiding applications */}
+     
     </div>
   );
 }
