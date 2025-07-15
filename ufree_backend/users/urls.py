@@ -1,15 +1,21 @@
 # users/urls.py
-# (Modify your existing urls.py for the 'users' app)
-
 from django.urls import path
-from rest_framework_simplejwt.views import TokenRefreshView # Import TokenRefreshView
-from .views import CustomTokenObtainPairView, RegisterView, UserProfileView
+from rest_framework_simplejwt.views import TokenRefreshView
+from .views import (
+    CustomTokenObtainPairView,
+    RegisterView,
+    UserProfileView,
+    LoginSessionView,
+    LogoutSessionView,
+    LogoutAllSessionsView,
+)
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
-    # Use our custom login view for token obtaining
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # Add the refresh token endpoint
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('profile/', UserProfileView.as_view(), name='user_profile'),
+    path('sessions/', LoginSessionView.as_view(), name='user_sessions'),
+    path('logout-session/', LogoutSessionView.as_view(), name='logout_session'),
+    path('logout-all-sessions/', LogoutAllSessionsView.as_view(), name='logout_all_sessions'),
 ]

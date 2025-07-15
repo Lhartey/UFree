@@ -16,10 +16,10 @@ interface Student {
 
 interface Application {
   id: number;
-  job: Job; // This should ideally be job_details from the backend serializer
+  job_details: Job; // This should ideally be job_details from the backend serializer
   student: Student;
   cover_letter: string;
-  message: string; // Added message field
+  message?: string; // Added message field
   cv: string | null; // CV can be null if not uploaded
   applied_at: string;
 }
@@ -41,11 +41,8 @@ const MyApplications = () => {
           return;
         }
 
-        const res = await axios.get("[http://127.0.0.1:8000/api/jobs/my-applications/](http://127.0.0.1:8000/api/jobs/my-applications/)", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axios.get("jobs/my-applications/");
+
         setApplications(res.data);
       } catch (err: any) { // Use 'any' for now to catch all error types
         console.error("Failed to load applications:", err);
@@ -78,7 +75,7 @@ const MyApplications = () => {
             <div key={app.id} className="border p-4 rounded-xl shadow bg-white">
               <div className="flex justify-between items-center mb-2">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-800">{app.job.title}</h2>
+                  <h2 className="text-xl font-semibold text-gray-800">{app.job_details.title || "No title available"}</h2>
                   <p className="text-sm text-gray-500">Applied on {new Date(app.applied_at).toLocaleDateString()}</p>
                 </div>
                 {app.cv && (

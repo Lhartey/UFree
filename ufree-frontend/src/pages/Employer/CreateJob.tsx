@@ -8,15 +8,17 @@ export default function CreateJob() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
+  const [location, setLocation] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     try {
-      await axios.post('/jobs/create/', {
+      await axios.post('/jobs/', {
         title,
         description,
+        location,
       });
       navigate('/employer/dashboard');
     } catch (err) {
@@ -55,6 +57,17 @@ export default function CreateJob() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Location</label>
+            <input
+            type="text"
+            className="mt-1 w-full border border-gray-300 rounded p-2"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            required
             />
           </div>
 

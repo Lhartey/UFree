@@ -1,5 +1,5 @@
 // src/pages/LoginPage.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,19 +7,29 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, user, loading } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate(`/${user.role}/dashboard`);
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     try {
       await login(email, password);
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      navigate(`/${user.role}/dashboard`);
+      // Redirect handled by useEffect
     } catch (err) {
       setError('Invalid credentials. Please try again.');
     }
   };
+
+  if (loading) {
+    return <p className="text-center mt-10 text-gray-600">Loading...</p>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-100 via-white to-blue-100 flex items-center justify-center px-4">

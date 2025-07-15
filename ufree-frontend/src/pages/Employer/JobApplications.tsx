@@ -13,6 +13,7 @@ type Application = {
   };
   cover_letter: string;
   applied_at: string;
+  cv?: string;
   // If you also want to display CV file, you might add cv: string; here
 };
 
@@ -95,12 +96,16 @@ export default function JobApplications() {
                 </span>
               </div>
               <p className="text-gray-700">{app.cover_letter}</p>
-              {/* You can add a link to download CV here if your backend serves it */}
-              {/* {app.cv && (
-                <a href={app.cv} target="_blank" rel="noopener noreferrer" className="text-indigo-600 text-sm font-medium hover:underline mt-2 block">
-                  Download CV
-                </a>
-              )} */}
+              {app.cv && (
+                <a
+                href={app.cv}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 text-sm font-medium hover:underline mt-2 block"
+              >
+                View CV
+              </a>
+              )}
             </div>
           ))}
         </div>
