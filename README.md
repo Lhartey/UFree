@@ -64,16 +64,12 @@ Frontend and backend core features are under active development. Final testing a
 ---
 
 ## 📁 Project Structure
-UFree/
- -├── backend/ # Django backend
-- │ └── apps/ # Core APIs: auth, jobs, applications
-- ├── frontend/ # React + Vite frontend
-- │ └── src/ # Pages, context, components
-- └── README.md
-
-yaml
-Copy
-Edit
+UFree/  
+├── backend/ # Django backend  
+│ └── apps/ # Core APIs: auth, jobs, applications  
+├── frontend/ # React + Vite frontend  
+│ └── src/ # Pages, context, components  
+└── README.md  
 
 ---
 
