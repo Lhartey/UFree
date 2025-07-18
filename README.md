@@ -1,50 +1,67 @@
 # UFree – Student Freelance Job Portal 🧑‍🎓💼 (Work In Progress)
 
-UFree is a full-stack web application designed to connect university students to freelance and part-time job opportunities. Originally built as my final year university project, UFree is currently being **upgraded with a modern stack and improved user experience** to better reflect professional software development practices.
+**UFree** is a full-stack web application designed to connect university students to freelance and part-time job opportunities. Built as my final year university project, UFree aims to empower students with flexible earning options while gaining real-world experience.
 
-This platform aims to empower students with flexible earning options while helping them gain real-world experience and build digital portfolios.
-
----
-
-## 🚀 Features (Planned & In Development)
-
-- 🔐 User Authentication (Students & Employers)
-- 📃 CV Upload and Application Submission
-- 🧑‍💼 Employer Dashboard (Manage Listings & View Applicants)
-- 🎓 Student Dashboard (Track Applications & Bookmarks)
-- 💬 Messaging between Employers and Applicants
-- 🧠 Smart Job Matching (Based on Tags, Category & Keywords)
-- 📱 Mobile-Responsive UI (Tailwind CSS)
-- 📈 Planned Admin Analytics & Reports
+> ⚙️ UFree is currently being upgraded with a new tech stack and enhanced features.
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Features (In Progress & Planned)
 
-| Layer        | Tools Used                            |
-|--------------|----------------------------------------|
-| Frontend     | React.js, TypeScript, Tailwind CSS, Vite |
-| Backend      | Node.js, Express.js                   |
-| Database     | MongoDB (Mongoose ODM)                |
-| Authentication | JWT with Role-Based Access          |
-| Dev Tools    | Git, GitHub, Postman, VS Code         |
+### 🧑‍🎓 For Students
+- ✅ Register, login, and manage account
+- ✅ Browse job listings from verified employers
+- ✅ Apply to jobs with uploaded CV and message
+- ✅ View and track submitted applications
+- 🛠 Edit CV or cover letter after submission (planned)
+- 🛡 Protected dashboard with session checks
+
+### 🧑‍💼 For Employers
+- ✅ Register and login securely
+- ✅ Post freelance and part-time job opportunities
+- ✅ View applications and access uploaded CVs
+- 🛠 Manage and edit job listings
+
+---
+
+## 🧱 Tech Stack
+
+### 🧾 Legacy Stack (Early Development)
+- **Frontend**: React.js, TypeScript, Tailwind CSS, Vite
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB (Mongoose ODM)
+
+### 🚀 Current Stack (Upgraded)
+- **Frontend**: React (Vite + TypeScript), Tailwind CSS
+- **Backend**: Django & Django REST Framework
+- **Database**: PostgreSQL (via Django ORM)
+- **Auth**: JWT (access + refresh tokens)
+- **File Upload**: CV and cover letter handling
+- **Dev Tools**: Git, GitHub, VS Code, Postman
+
+---
+
+## 🔐 Authentication & Security
+- Role-based access: **Student** and **Employer**
+- JWT authentication with token refresh logic
+- Logout from all sessions (in development)
+- Protected routes with token expiration check
+- Secure CV upload & download handling
 
 ---
 
 ## 📦 Project Status
 
-🚧 **Work In Progress**  
-The project is currently undergoing a complete redesign and upgrade. The frontend is being rebuilt using **React + Vite** for performance, while the backend APIs are being improved for scalability and maintainability. Deployment and testing will follow after key feature integrations.
+> 🚧 **Work In Progress**  
+Frontend and backend core features are under active development. Final testing and deployment will follow once critical flows are completed.
+
+- ✅ Authentication & Dashboards
+- ✅ Job Posting and Application Flow
+- ✅ CV Upload and Submission
+- 🛠 Logout from All Devices (in progress)
+- 🛠 Profile Page (in progress)
 
 ---
 
-## 📁 Getting Started
+## 📁 Project Structure
 
-```bash
-# Clone the repository
-git clone https://github.com/Lhartey/UFree.git
-
-# Navigate into the project
-cd UFree
-
-# Follow setup instructions in the frontend and backend folders
