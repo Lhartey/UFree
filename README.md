@@ -1,4 +1,4 @@
-# UFree – Student Freelance Job Portal 🧑‍🎓💼 (Work In Progress)
+# UFree – Student Freelance Job Portal  (Work In Progress)
 
 **UFree** is a full-stack web application designed to connect university students to freelance and part-time job opportunities. Built as my final year university project, UFree aims to empower students with flexible earning options while gaining real-world experience.
 
@@ -6,9 +6,9 @@
 
 ---
 
-## 🚀 Features (In Progress & Planned)
+##  Features (In Progress & Planned)
 
-### 🧑‍🎓 For Students
+###  For Students
 - ✅ Register, login, and manage account
 - ✅ Browse job listings from verified employers
 - ✅ Apply to jobs with uploaded CV and message
@@ -16,7 +16,7 @@
 - 🛠 Edit CV or cover letter after submission (planned)
 - 🛡 Protected dashboard with session checks
 
-### 🧑‍💼 For Employers
+###  For Employers
 - ✅ Register and login securely
 - ✅ Post freelance and part-time job opportunities
 - ✅ View applications and access uploaded CVs
@@ -24,14 +24,14 @@
 
 ---
 
-## 🧱 Tech Stack
+##  Tech Stack
 
 ### 🧾 Legacy Stack (Early Development)
 - **Frontend**: React.js, TypeScript, Tailwind CSS, Vite
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB (Mongoose ODM)
 
-### 🚀 Current Stack (Upgraded)
+###  Current Stack (Upgraded)
 - **Frontend**: React (Vite + TypeScript), Tailwind CSS
 - **Backend**: Django & Django REST Framework
 - **Database**: PostgreSQL (via Django ORM)
@@ -41,7 +41,7 @@
 
 ---
 
-## 🔐 Authentication & Security
+##  Authentication & Security
 - Role-based access: **Student** and **Employer**
 - JWT authentication with token refresh logic
 - Logout from all sessions (in development)
@@ -50,9 +50,9 @@
 
 ---
 
-## 📦 Project Status
+## Project Status
 
-> 🚧 **Work In Progress**  
+>  **Work In Progress**  
 Frontend and backend core features are under active development. Final testing and deployment will follow once critical flows are completed.
 
 - ✅ Authentication & Dashboards
@@ -64,4 +64,28 @@ Frontend and backend core features are under active development. Final testing a
 ---
 
 ## 📁 Project Structure
+UFree/
+ -├── backend/ # Django backend
+- │ └── apps/ # Core APIs: auth, jobs, applications
+- ├── frontend/ # React + Vite frontend
+- │ └── src/ # Pages, context, components
+- └── README.md
 
+yaml
+Copy
+Edit
+
+---
+
+## 🧰 Getting Started
+
+### Clone the Repo
+```bash
+git clone https://github.com/Lhartey/UFree.git
+cd UFree
+cd backend
+python -m venv env
+source env/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
